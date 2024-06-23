@@ -8,5 +8,4 @@
 <body>
     @yield('space-work')
 </body>
-
 </html>
