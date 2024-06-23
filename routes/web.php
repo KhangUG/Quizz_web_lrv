@@ -38,12 +38,15 @@ use App\Http\Controllers\AdminController;
         Route::post('/delete-subject', [AdminController::class,'deleteSubject'])->name('deleteSubject');
         
         //Exam route
-        Route::get('admin/exam', [AdminController::class, 'examDashboard']);
+        Route::get('/admin/exam', [AdminController::class, 'examDashboard']);
         Route::get('get-exam-detail/{id}', [AdminController::class, 'getExamDetail'])->name('getExamDetail');
 
         Route::post('/add-exam', [AdminController::class,'addExam'])->name('addExam');
         Route::post('/update-exam', [AdminController::class,'updateExam'])->name('updateExam');
         Route::post('/delete-exam', [AdminController::class,'deleteExam'])->name('deleteExam');
+
+        //QUestion route
+        Route::get('/admin/qna-ans', [AdminController::class, 'qnaDashboard']);
     });
 
     // Route cho sinh viên

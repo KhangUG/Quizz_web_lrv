@@ -88,7 +88,9 @@ class AdminController extends Controller
                 'exam_name' => $request->exam_name,
                 'subject_id' => $request->subject_id,
                 'date' => $request->date,
-                'time' => $request->time
+                'time' => $request->time,
+                'attempt' => $request->attempt
+
             ]);
 
             return response()->json(['success' => true, 'msg' => 'Exam added successfully!']);
@@ -108,7 +110,7 @@ class AdminController extends Controller
             return response()->json(['success' => false, 'msg' => $e->getMessage()]);
         }
     }
-    //edit
+    //edit exam
     public function updateExam(Request $request)
     {
         try {
@@ -117,6 +119,7 @@ class AdminController extends Controller
             $exam -> subject_id = $request->subject_id;
             $exam -> date = $request->date;
             $exam -> time = $request->time;
+            $exam -> attempt = $request->attempt;
             $exam->save();
 
             return response()->json(['success' => true, 'msg' => 'Exam update successfully!']);
@@ -125,7 +128,7 @@ class AdminController extends Controller
         }
     }
 
-    //delete
+    //delete exam
     public function deleteExam(Request $request)
     {
         try {
@@ -145,6 +148,9 @@ class AdminController extends Controller
     
     }
 
-
+    public function qnaDashboard()
+    {
+        return view('admin.qnaDashboard');
+    }
 
 }

@@ -16,9 +16,11 @@
             <th>Exam Name</th>
             <th>Subject</th>
             <th>Data</th>
+            <th>Time</th>
+            <th>Attempt</th>
             <th>Edit</th>
             <th>Delete</th>
-            <th>Time</th>
+            
         </tr>
     </thead>
     <tbody>
@@ -30,13 +32,15 @@
             <td>{{ $exam->exam_name }}</td>
             <td>
                 @if(isset($exam->subjects[0]))
-                {{ $exam->subjects[0]['subject'] }}
+                    {{ $exam->subjects[0]['subject'] }}
                 @else
-                No subject assigned
+                 No subject assigned
                 @endif
             </td>
             <td>{{ $exam->date }}</td>
             <td>{{ $exam->time }} Hrs</td>
+            <td>{{ $exam->attempt }} Time</td>
+
             <td>
                 <button type="button" class="btn btn-info editButton" data-id="{{ $exam->id }}" data-toggle="modal"
                     data-target="#editExamtModel">
@@ -75,7 +79,7 @@
             <form id="addExam" action="">
                 @csrf
                 <div class="modal-body">
-                    <input type="hidden" name="exam_id" id="exam_id">
+                    
                     <input type="text" name="exam_name" placeholder="Enter Exam name" class="w-100" required>
                     <br><br>
                     <select name="subject_id" required class="w-100">
@@ -91,6 +95,8 @@
                     <input type="date" name="date" class="w-100" required min="@php echo date('Y-m-d'); @endphp">
                     <br><br>
                     <input type="time" name="time" class="w-100" required>
+                    <br><br>
+                    <input type="number" min = "1" name="attempt" placeholder ="Enter Exam attempt time"  class="w-100" required>
 
                 </div>
                 <div class="modal-footer">
@@ -137,6 +143,8 @@
                         min="@php echo date('Y-m-d'); @endphp">
                     <br><br>
                     <input type="time" name="time" id="time" class="w-100" required>
+                    <br><br>
+                    <input type="number" min = "1" id="attempt" name="attempt" placeholder ="Enter Exam attempt time"  class="w-100" required>
 
                 </div>
                 <div class="modal-footer">
@@ -219,6 +227,8 @@ $(document).ready(function() {
                     $("#subject_id").val(exam[0].subject_id);
                     $("#date").val(exam[0].date);
                     $("#time").val(exam[0].time);
+                    $("#attempt").val(exam[0].attempt);
+                    
                 } else {
                     alert(data.msg);
                 }
