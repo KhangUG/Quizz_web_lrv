@@ -8,6 +8,9 @@ use App\Models\Exam;
 use App\Models\Question;
 use App\Models\Answer;
 
+use App\Imports\QnaImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class AdminController extends Controller
 {   
     //add subject
@@ -269,6 +272,23 @@ class AdminController extends Controller
 
             return response()->json(['success' => true, 'msg' => 'Q&A delete thành công!']);
         } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function importQna(Request $request)
+    {
+        try{
+            Excel::import(new QnaImport, $request->file('file'));
+            return response()->json([
+                'success' => true,
+                'msg' => 'Import Q&A thanh cong'
+            ]);
+
+        }catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'msg' => $e->getMessage()

@@ -10,6 +10,11 @@
     Add Q&A
 </button>
 
+<button style="margin-bottom: 3px;" type="button" class="btn btn-info" data-toggle="modal"
+    data-target="#importQnaModel">
+    Import Q&A
+</button>
+
 <table class="table">
     <thead>
         <th>#</th>
@@ -170,6 +175,37 @@
         </div>
     </div>
 </div>
+
+
+<!--Import Qna Model -->
+<div class="modal fade" id="importQnaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Import Q&A</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="importQna" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <input type="file" name="file" id="fileupload" require
+                        accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet ,application/vnd.ms.excel">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Import Q&A </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <script>
 $(document).ready(function() {
 
@@ -370,12 +406,12 @@ $(document).ready(function() {
             }
 
             if (checkIsCorrect) {
-               var formData =  $(this).serialize();
+                var formData = $(this).serialize();
 
                 $.ajax({
                     url: "{{ route('updateQna') }}",
                     type: "POST",
-                    data:formData,
+                    data: formData,
                     success: function(data) {
                         if (data.success == true) {
                             location.reload();
@@ -416,12 +452,12 @@ $(document).ready(function() {
 
 
     //delete Q&A
-    $('.deleteButton').click(function(){
+    $('.deleteButton').click(function() {
         var id = $(this).attr('data-id');
         $('#delete_qna_id').val(id);
     });
 
-    $('#deleteQna').submit(function(e){
+    $('#deleteQna').submit(function(e) {
         e.preventDefault();
 
         var formData = $(this).serialize();
@@ -445,6 +481,36 @@ $(document).ready(function() {
         });
     });
 
+    // Import Qna
+    $('#importQna').submit(function(e) {
+        e.preventDefault();
+
+        let formData = new FormData(this); // Sử dụng 'this' để tham chiếu đến form hiện tại
+
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $.ajax({
+            url: "{{ route('importQna') }}", // Đảm bảo rằng đường dẫn này đúng
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+            }
+        });
+    });
 
 });
 </script>
