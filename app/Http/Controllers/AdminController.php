@@ -7,6 +7,7 @@ use App\Models\Subject;
 use App\Models\Exam;
 use App\Models\Question;
 use App\Models\Answer;
+use App\Models\User;
 
 use App\Imports\QnaImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -152,8 +153,9 @@ class AdminController extends Controller
         }
     
     }
+    
 
-    ///Q&A
+    ///Q&A/////////////////////////////////////////////////////////////
     
     public function qnaDashboard()
     {
@@ -279,6 +281,7 @@ class AdminController extends Controller
         }
     }
 
+    // import qna 
     public function importQna(Request $request)
     {
         try{
@@ -296,5 +299,15 @@ class AdminController extends Controller
         }
     }
 
-    
+
+
+    // ========STUDENTS========== //
+
+    public function studentsDashboard()
+    {
+        $students = User::where('is_admin', 0)->get();
+        return view('admin.studentsDashboard', compact('students'));
+    }
+
+
 }

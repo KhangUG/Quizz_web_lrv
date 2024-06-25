@@ -1,8 +1,16 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
 @extends('layout.layout-common')
 
 @section('space-work')
 
-<h1>Login</h1>
 
 @if($errors->any())
 @foreach($errors->all() as $error)
@@ -14,30 +22,67 @@
 <p style="color:red;">{{Session::get('error')}}</p>
 @endif
 
-<!-- <form action="{{ route('userLogin') }}" method="POST">
-    @csrf
-    <input type="email" name="email" placeholder="Enter Email">
-    <br><br>
-    <input type="password" name="password" placeholder="Enter Password">
-    <br><br>
-    <input type="submit" value="Login">
-</form> -->
+<div id="login">
+    <h3 class="text-center text-white pt-5">Login form</h3>
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div id="login-box" class="col-md-12">
 
-<form action="{{ route('userLogin') }}" method="POST">
-    @csrf
-    <div class="form-group">
-        <input type="email"  name="email" class="form-control" placeholder="Your Email" />
+
+                    <form id="login-form" action="{{ route('userLogin') }}" method="POST">
+                        @csrf
+                        <h3 class="text-center text-info">Login</h3>
+                        <div class="form-group">
+                            <label for="username" class="text-info">Username:</label><br>
+                            <input type="email" name="email" id="username" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-info">Password:</label><br>
+                            <input type="password" name="password" id="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="remember-me" class="text-info"><span>Remember me</span> <span><input
+                                        id="remember-me" name="remember-me" type="checkbox"></span></label><br>
+                            <input type="submit" class="btnSubmit btn btn-info btn-md" value="Login">
+                        </div>
+                        <div id="register-link" class="text-right">
+                            <a href="/forget-password" class="ForgetPwd text-info ">Forget Password?</a>
+                        </div>
+
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="password" name="password" class="form-control" placeholder="Enter Password"  />
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btnSubmit" value="Login" />
-    </div>
-    <div class="form-group">
-        <a href="/forget-password" class="ForgetPwd">Forget Password?</a>
-    </div>
-</form>
+</div>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #17a2b8;
+    height: 100vh;
+}
+
+#login .container #login-row #login-column #login-box {
+    margin-top: 120px;
+    max-width: 600px;
+    height: 320px;
+    border: 1px solid #9C9C9C;
+    background-color: #EAEAEA;
+}
+
+#login .container #login-row #login-column #login-box #login-form {
+    padding: 20px;
+}
+
+#login .container #login-row #login-column #login-box #login-form #register-link {
+    margin-top: -85px;
+}
+</style>
 
 
 @endsection

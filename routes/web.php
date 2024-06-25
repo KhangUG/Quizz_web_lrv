@@ -56,7 +56,11 @@ use App\Http\Controllers\AdminController;
 
     });
 
-    // Route cho sinh viên
+    //Students Routiing
+    Route::get('/admin/students', [AdminController::class, 'studentsDashboard']);
+
+
+    // Route check sv hay ad
     Route::group(['middleware'=>['web', 'checkStudent']],function(){
         Route::get('/dashboard', [AuthController::class, 'loadDashboard']);
     });
