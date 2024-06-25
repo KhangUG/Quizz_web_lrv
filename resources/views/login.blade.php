@@ -39,6 +39,5 @@
     </div>
 </form>
 
-<a href="/forget-password">Forget Password</a>
 
 @endsection

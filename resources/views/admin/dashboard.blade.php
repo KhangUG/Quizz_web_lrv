@@ -61,7 +61,7 @@
                 </div>
                 <div class="modal-body">
                     <label>Subject:</label>
-                    <input type="text" name="subject" placeholder="Enter subject name" required>
+                    <input type="text" name="subject" placeholder="Enter subject name" class="w-100" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -90,7 +90,7 @@
                 @csrf
                 <div class="modal-body">
                     <label>Subject:</label>
-                    <input type="text" name="subject" id="edit_subject" required>
+                    <input type="text" name="subject" id="edit_subject" class="w-100" required>
                     <input type="hidden" name="id" id="edit_subject_id" required>
                 </div>
                 <div class="modal-footer">
