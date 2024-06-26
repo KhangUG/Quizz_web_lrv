@@ -47,7 +47,7 @@
                             <input type="submit" class="btnSubmit btn btn-info btn-md" value="Login">
                         </div>
                         <div id="register-link" class="text-right">
-                            <a href="/forget-password" class="ForgetPwd text-info ">Forget Password?</a>
+                            <a href="/forget-password" class="ForgetPwd text-info ">Forget Password ?</a>
                         </div>
 
                     </form>

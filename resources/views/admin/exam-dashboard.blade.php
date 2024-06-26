@@ -18,9 +18,10 @@
             <th>Data</th>
             <th>Time</th>
             <th>Attempt</th>
+            <th>Add Questions</th>
             <th>Edit</th>
             <th>Delete</th>
-            
+
         </tr>
     </thead>
     <tbody>
@@ -32,14 +33,17 @@
             <td>{{ $exam->exam_name }}</td>
             <td>
                 @if(isset($exam->subjects[0]))
-                    {{ $exam->subjects[0]['subject'] }}
+                {{ $exam->subjects[0]['subject'] }}
                 @else
-                 No subject assigned
+                No subject assigned
                 @endif
             </td>
             <td>{{ $exam->date }}</td>
             <td>{{ $exam->time }} Hrs</td>
             <td>{{ $exam->attempt }} Time</td>
+            <td>
+                <a href="#" data-id="{{ $exam->id }}" data-toggle="modal" data-target="#addQnaModel">Add Question</a>
+            </td>
 
             <td>
                 <button type="button" class="btn btn-info editButton" data-id="{{ $exam->id }}" data-toggle="modal"
@@ -79,7 +83,7 @@
             <form id="addExam" action="">
                 @csrf
                 <div class="modal-body">
-                    
+
                     <input type="text" name="exam_name" placeholder="Enter Exam name" class="w-100" required>
                     <br><br>
                     <select name="subject_id" required class="w-100">
@@ -96,7 +100,8 @@
                     <br><br>
                     <input type="time" name="time" class="w-100" required>
                     <br><br>
-                    <input type="number" min = "1" name="attempt" placeholder ="Enter Exam attempt time"  class="w-100" required>
+                    <input type="number" min="1" name="attempt" placeholder="Enter Exam attempt time" class="w-100"
+                        required>
 
                 </div>
                 <div class="modal-footer">
@@ -144,7 +149,8 @@
                     <br><br>
                     <input type="time" name="time" id="time" class="w-100" required>
                     <br><br>
-                    <input type="number" min = "1" id="attempt" name="attempt" placeholder ="Enter Exam attempt time"  class="w-100" required>
+                    <input type="number" min="1" id="attempt" name="attempt" placeholder="Enter Exam attempt time"
+                        class="w-100" required>
 
                 </div>
                 <div class="modal-footer">
@@ -184,6 +190,41 @@
     </div>
 </div>
 
+<!--Add Answer Model -->
+<div class="modal fade" id="addQnaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Q&A</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form id="addQna" action="">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="exam_id" id="addExamId">
+                    <br><br>
+                    <select name="questions" multiple multiselect-search="true" multiselect-select-all="true"
+                        onchange="console.log(this.selectedOptions)">
+                        <option value="hii">Hii</option>
+                        <option value="hii">Hai</option>
+                        <option value="hii">kai</option>
+                        <option value="hii">tuasd</option>
+                        <option value="hii">acasdr</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Q&A</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
@@ -228,7 +269,7 @@ $(document).ready(function() {
                     $("#date").val(exam[0].date);
                     $("#time").val(exam[0].time);
                     $("#attempt").val(exam[0].attempt);
-                    
+
                 } else {
                     alert(data.msg);
                 }
@@ -268,7 +309,8 @@ $(document).ready(function() {
         $("#deleteExam").submit(function(e) {
             e.preventDefault(); // Ngăn chặn hành động submit mặc định của form
 
-            var formData = $(this).serialize(); // Thu thập dữ liệu từ form và chuyển thành chuỗi
+            var formData = $(this)
+                .serialize(); // Thu thập dữ liệu từ form và chuyển thành chuỗi
             $.ajax({
                 url: "{{ route('deleteExam') }}",
                 type: "POST",

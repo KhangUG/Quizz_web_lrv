@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ asset('js/multiselect-dropdown.js') }}"></script>
+    <style>
+    .multiselect-dropdown {
+        width: 100% !important;
+    }
+    </style>
+
+
 </head>
 
 <body>

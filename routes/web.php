@@ -58,6 +58,10 @@ use App\Http\Controllers\AdminController;
 
     //Students Routiing
     Route::get('/admin/students', [AdminController::class, 'studentsDashboard']);
+    Route::post('/add-student', [AdminController::class,'addStudent'])->name('addStudent');
+    Route::post('/edit-student', [AdminController::class,'editStudent'])->name('editStudent');
+    Route::post('/delete-student', [AdminController::class,'deleteStudent'])->name('deleteStudent');
+
 
 
     // Route check sv hay ad
