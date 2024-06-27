@@ -19,6 +19,7 @@
             <th>Time</th>
             <th>Attempt</th>
             <th>Add Questions</th>
+            <th>Show Questions</th>
             <th>Edit</th>
             <th>Delete</th>
 
@@ -42,7 +43,13 @@
             <td>{{ $exam->time }} Hrs</td>
             <td>{{ $exam->attempt }} Time</td>
             <td>
-                <a href="#" data-id="{{ $exam->id }}" data-toggle="modal" data-target="#addQnaModel">Add Question</a>
+                <a href="#" class="addQuestion" data-id="{{ $exam->id }}" data-toggle="modal"
+                    data-target="#addQnaModel">Add Question</a>
+            </td>
+
+            <td>
+                <a href="#" class="seeQuestions" data-id="{{ $exam->id }}" data-toggle="modal"
+                    data-target="#seeQnaModel">Show Question</a>
             </td>
 
             <td>
@@ -190,7 +197,7 @@
     </div>
 </div>
 
-<!--Add Answer Model -->
+<!--Add AQna Model -->
 <div class="modal fade" id="addQnaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -207,15 +214,20 @@
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="exam_id" id="addExamId">
+                    <input type="search" name="search" id="search" onkeyup="searchTable()" class="w-100"
+                        placeholder="Search here">
                     <br><br>
-                    <select name="questions" multiple multiselect-search="true" multiselect-select-all="true"
-                        onchange="console.log(this.selectedOptions)">
-                        <option value="hii">Hii</option>
-                        <option value="hii">Hai</option>
-                        <option value="hii">kai</option>
-                        <option value="hii">tuasd</option>
-                        <option value="hii">acasdr</option>
-                    </select>
+                    <table class="table" id="questionsTable">
+                        <thead>
+                            <th>Select</th>
+                            <th>Question</th>
+                        </thead>
+                        <tbody class="addBody">
+
+
+                        </tbody>
+                    </table>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -226,7 +238,42 @@
     </div>
 </div>
 
+<!--show Ques Model -->
+<div class="modal fade" id="seeQnaModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
 
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Questions</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <th>S.no</th>
+                        <th>Question</th>
+                        <th>Delete</th>
+                    </thead>
+                    <tbody class="seeQuestionTable">
+
+
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <script>
 $(document).ready(function() {
@@ -299,7 +346,6 @@ $(document).ready(function() {
     });
 
     //Delete exam 
-
     $(document).ready(function() {
         $(".deleteButton").click(function() {
             var id = $(this).attr('data-id');
@@ -326,7 +372,175 @@ $(document).ready(function() {
         });
     });
 
+
+    //add question vao exam 
+    $('.addQuestion').click(function() {
+        var id = $(this).attr('data-id');
+        $('#addExamId').val(id);
+
+        $.ajax({
+            url: "{{ route('getQuestions') }}",
+            type: "GET",
+            data: {
+                exam_id: id
+            },
+            success: function(data) {
+                if (data.success == true) {
+                    var questions = data.data;
+                    var html = "";
+                    if (questions.length > 0) {
+                        for (let i = 0; i < questions.length; i++) {
+                            html += `
+                        <tr> 
+                            <td><input type="checkbox" value="` + questions[i]['id'] + `" name="questions_ids[]"></td>
+                            <td>` + questions[i]['questions'] + `</td>
+                        </tr>
+                        `;
+                        }
+                    } else {
+                        html += `
+                    <tr> 
+                        <td colspan="2">Questions not Available!</td>
+                    </tr>`;
+                    }
+                    $('.addBody').html(html);
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', error);
+            }
+        });
+    });
+
+    //add exam 
+
+    $("#addQna").submit(function(e) {
+        e.preventDefault(); // Ngăn chặn hành động submit mặc định của form
+
+        var formData = $(this)
+            .serialize(); // Thu thập dữ liệu từ form và chuyển thành chuỗi
+        $.ajax({
+            url: "{{ route('addQuestions') }}",
+            type: "POST",
+            data: formData, // Dữ liệu gửi đi
+            success: function(data) { // Hàm xử lý khi yêu cầu thành công
+                if (data.success == true) {
+                    location.reload(); // Tải lại trang nếu thành công
+                } else {
+                    alert(data.msg); // Hiển thị thông báo lỗi nếu thất bại
+                }
+            }
+        });
+    });
+
+    // show question 
+    $('.seeQuestions').click(function() {
+        var id = $(this).attr('data-id');
+        $.ajax({
+            url: "{{ route('getExamQuestions') }}",
+            type: "GET",
+            data: {
+                exam_id: id
+            },
+            success: function(data) {
+                // console.log(data);
+                var html = '';
+                var questions = data.data;
+                if (questions.length > 0) {
+                    for (let i = 0; i < questions.length; i++) {
+                        html += `
+                            <tr >
+                                <td>` + (i + 1) + `</td>
+                                <td >` + questions[i]['question'][0]['question'] + `</td> 
+                                <td >
+                                    <button class="btn btn-danger deleteQuestion"  data-id = "` + questions[i]['id'] +
+                            `"> Delete </button>
+                                </td> 
+                            </tr>
+                        `;
+                    }
+
+                } else {
+                    html += `
+                        <tr >
+                            <td colspan="1"> Question not avail </td> 
+                        </tr>
+                    `;
+                }
+
+                $('.seeQuestionTable').html(html);
+            }
+        });
+    });
+
+    //delete question dc giao  cho exam
+
+    $(document).on('click', '.deleteQuestion', function() {
+        // Lấy id từ thuộc tính data-id của phần tử được click
+        var id = $(this).attr('data-id');
+        // Lưu đối tượng jQuery của phần tử được click
+        var obj = $(this);
+
+        // Kiểm tra xem id có tồn tại hay không
+        if (!id) {
+            console.error('Không tìm thấy thuộc tính data-id');
+            return;
+        }
+
+        // Thực hiện yêu cầu AJAX để xóa câu hỏi
+        $.ajax({
+            url: "{{ route('deleteExamQuestions') }}", // Đường dẫn đến route xử lý yêu cầu xóa
+            type: "GET", // Phương thức GET
+            data: {
+                id: id // Dữ liệu gửi đi bao gồm id của câu hỏi
+            },
+            success: function(data) {
+                // Nếu yêu cầu thành công và data.success là true
+                if (data.success) {
+                    // Xóa dòng <tr> chứa câu hỏi
+                    obj.closest('tr').remove();
+                } else {
+                    // Hiển thị thông báo lỗi từ server
+                    alert(data.msg);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Xử lý lỗi nếu yêu cầu AJAX thất bại
+                console.error('Lỗi khi xóa câu hỏi:', status, error);
+                alert('Đã xảy ra lỗi khi xóa câu hỏi. Vui lòng thử lại sau.');
+            }
+        });
+    });
+
+
+
+
 });
+</script>
+
+<script>
+function searchTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('search');
+    filter = input.value.toUpperCase();
+    table = document.getElementById('questionsTable');
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+
+}
 </script>
 
 

@@ -8,6 +8,7 @@ use App\Models\Exam;
 use App\Models\Question;
 use App\Models\Answer;
 use App\Models\User;
+use App\Models\QnaExam;
 
 use App\Imports\QnaImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -95,12 +96,16 @@ class AdminController extends Controller
     public function addExam(Request $request)
     {
         try {
+            // tạo id , gắn id duy nhất cho bài kểm tra
+            $unique_id = uniqid('exid'); // ma ngau nhien
+            // end tạo id , gắn id duy nhất cho bài kểm tra
             Exam::insert([
                 'exam_name' => $request->exam_name,
                 'subject_id' => $request->subject_id,
                 'date' => $request->date,
                 'time' => $request->time,
-                'attempt' => $request->attempt
+                'attempt' => $request->attempt,
+                'enterance_id' => $unique_id
 
             ]);
 
@@ -389,18 +394,111 @@ class AdminController extends Controller
     //Delete student
     public function deleteStudent(Request $request)
     {
-        try {
+        try{
             User::where('id', $request->id)->delete();
             return response()->json([
                 'success' => true,
                 'msg' => 'Student deleted successfully'
             ]);
-        } catch (\Exception $e) {
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage()
+            ]);
+        }
+            
+        
+    }
+
+    //get questions
+    public function getQuestions(Request $request)
+    {
+        $exam_id = $request->input('exam_id');
+
+        // Đảm bảo exam_id được cung cấp
+        if (!$exam_id) {
+            return response()->json(['success' => false, 'msg' => 'Exam ID is required'], 400);
+        }
+
+        // Lấy câu hỏi dựa trên exam_id
+        $questions = Question::all(); // Điều chỉnh để lấy câu hỏi dựa trên exam_id
+
+        if (count($questions) > 0) {
+            $data = [];
+            $counter = 0;
+
+            foreach ($questions as $question) {
+                // Giả sử bạn đã thiết lập mối quan hệ model
+                $qnaExam = QnaExam::where(['exam_id' => $exam_id, 'question_id' => $question->id])->get();
+                if (count($qnaExam) == 0) {
+                    $data[$counter]['id'] = $question->id;
+                    $data[$counter]['questions'] = $question->question;
+                    $counter++;
+                }
+            }
+
+            return response()->json(['success' => true, 'msg' => 'Questions data!', 'data' => $data]);
+        } else {
+            return response()->json(['success' => false, 'msg' => 'Questions not found!']);
+        }
+    }
+
+     public function addQuestions(Request $request)
+    {
+        try {
+            // Kiểm tra nếu questions_ids được thiết lập trong yêu cầu
+            if (isset($request->questions_ids)) {
+                foreach ($request->questions_ids as $qid) {
+                // Chèn mỗi câu hỏi vào QnaExam
+                QnaExam::insert([
+                    'exam_id' => $request->exam_id,
+                    'question_id' => $qid
+                ]);
+            }
+            }
+            // Trả về phản hồi thành công
+            return response()->json(['success' => true, 'msg' => 'Questions added successfully!']);
+            
+
+        }catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'msg' => $e->getMessage()
             ]);
         }
     }
+
+     public function getExamQuestions(Request $request)
+    {
+        try {
+            $data = QnaExam::where('exam_id', $request-> exam_id)->with('question')->get();
+            // Trả về phản hồi thành công
+            return response()->json(['success' => true, 'msg' => 'Questions details!' , 'data' => $data]);
+            
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function deleteExamQuestions(Request $request)
+    {
+        try {
+            QnaExam::where('id', $request-> id)->delete();
+            // Trả về phản hồi thành công
+            return response()->json(['success' => true, 'msg' => 'Questions dedelete thanh cong!']);
+            
+
+        }catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage()
+            ]);
+        }
+    }
+    
 
 }
