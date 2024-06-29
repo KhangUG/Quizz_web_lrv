@@ -26,6 +26,7 @@
     <div class="wrapper d-flex align-items-stretch">
         <nav id="sidebar">
             <div class="custom-menu">
+                
                 <button type="button" id="sidebarCollapse" class="btn btn-primary">
                     <i class="fa fa-bars"></i>
                     <span class="sr-only">Toggle Menu</span>
@@ -39,6 +40,10 @@
 
                 <li class="active">
                     <a href="/admin/exam"><span class="fa fa-tasks mr-3"></span> Exams</a>
+                </li>
+
+                 <li class="active">
+                    <a href="/admin/marks"><span class="fa fa-check mr-3"></span> Marks</a>
                 </li>
 
                 <li class="active">

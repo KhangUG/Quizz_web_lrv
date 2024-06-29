@@ -18,8 +18,14 @@ class ExamController extends Controller
         $qnaExam = Exam::where('enterance_id', $id)->with('getQnaExam')->get();
         //sau khi ây, ktra xem co du lieu ket qua k 
         if(count($qnaExam) > 0){
+            $attempCount = ExamAttempt::where(['exam_id'=> $qnaExam[0]['id'] , 'user_id'=>auth()->user()->id])->count();
+
+            if($attempCount >= $qnaExam[0]['attempt']){
+                return view('student.exam-dashboard', ['success' =>false,'msg'=>'Your exam attemption has been complated','exam'=>$qnaExam ]);
+
+            }
             // ngay ki thi trùng ngày htai roi ktra xem co bai thi nao khong 
-            if($qnaExam[0]['date'] == date('Y-m-d')){
+            else if($qnaExam[0]['date'] == date('Y-m-d')){
                 if(count($qnaExam[0]['getQnaExam']) > 0){
 
                     $qna = QnaExam::where('exam_id', $qnaExam[0]['id'])->with('question','answers')->inRandomOrder()->get();

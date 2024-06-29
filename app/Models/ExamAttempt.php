@@ -16,4 +16,6 @@ class ExamAttempt extends Model
         'status',
         'marks',
     ];
+
+    
 }

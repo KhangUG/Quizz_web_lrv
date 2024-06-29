@@ -106,6 +106,7 @@
                     <input type="date" name="date" class="w-100" required min="@php echo date('Y-m-d'); @endphp">
                     <br><br>
                     <input type="time" name="time" class="w-100" required>
+
                     <br><br>
                     <input type="number" min="1" name="attempt" placeholder="Enter Exam attempt time" class="w-100"
                         required>

@@ -69,6 +69,11 @@ use App\Http\Controllers\ExamController;
     Route::post('/add-questions', [AdminController::class, 'addQuestions'])->name('addQuestions');
     Route::get('/get-exam-questions', [AdminController::class, 'getExamQuestions'])->name('getExamQuestions');
     Route::get('/delete-exam-questions', [AdminController::class, 'deleteExamQuestions'])->name('deleteExamQuestions');
+    
+    //Exam marks
+    Route::get('/admin/marks', [AdminController::class, 'loadMarks']);
+    Route::post('/update-marks', [AdminController::class, 'updateMarks'])->name('updateMarks');
+
 
     
 
