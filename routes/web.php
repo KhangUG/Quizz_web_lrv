@@ -74,7 +74,8 @@ use App\Http\Controllers\ExamController;
     Route::get('/admin/marks', [AdminController::class, 'loadMarks']);
     Route::post('/update-marks', [AdminController::class, 'updateMarks'])->name('updateMarks');
 
-
+    //Exam review
+    Route::get('/admin/review-exams', [AdminController::class, 'reviewExams'])->name('reviewExams');
     
 
 

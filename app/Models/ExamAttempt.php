@@ -13,9 +13,19 @@ class ExamAttempt extends Model
     protected $fillable = [
         'exam_id',
         'user_id',
-        'status',
-        'marks',
+        
     ];
 
+    public function user()
+    {
+        // return $this->hasOne(User::class,'id', 'user_id');
+          return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function exam()
+    {
+        // return $this->hasOne(Exam::class,'id', 'exam_id');
+        return $this->belongsTo(Exam::class, 'exam_id');
+    }
     
 }

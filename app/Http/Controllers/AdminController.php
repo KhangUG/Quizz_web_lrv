@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Subject;
 use App\Models\Exam;
+use App\Models\ExamAttempt;
 use App\Models\Question;
 use App\Models\Answer;
 use App\Models\User;
@@ -525,6 +526,14 @@ class AdminController extends Controller
                 'msg' => $e->getMessage()
             ]);
         }
+    }
+
+    // Review Exams
+
+    public function reviewExams(){
+        $attempts = ExamAttempt::with(['user', 'exam']) ->orderBy('id')->get();
+        
+        return view('admin.review-exams',compact('attempts'));
     }
 
 

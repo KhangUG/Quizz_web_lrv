@@ -54,6 +54,10 @@
                     <a href="/admin/students"><span class="fa fa-graduation-cap mr-3"></span> Students</a>
                 </li>
 
+                <li class="active">
+                    <a href="/admin/review-exams"><span class="fa fa-file-text-o mr-3"></span> Exam Review</a>
+                </li>
+
 
                 <li>
                     <a href="/logout"><span class="fa fa-user mr-3"></span> Logout</a>

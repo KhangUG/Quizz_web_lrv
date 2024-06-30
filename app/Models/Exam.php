@@ -39,7 +39,6 @@ class Exam extends Model
     public function getAttemptCounterAttribute(){
         return $this->count;
     }
-
-
+    
 
 }
