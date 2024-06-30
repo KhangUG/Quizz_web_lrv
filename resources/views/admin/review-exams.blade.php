@@ -34,7 +34,7 @@
 
                     <td>
                         @if($attempt->status == 0)
-                           <a href="#">Review & Approved</a>
+                           <a href="#" class="reviewExam" data-id="{{$attempt-> id}}" data-toggle="modal" data-target="#reviewExamModal">Review & Approved</a>
                         @else
                             Complated
                         @endif
@@ -50,4 +50,82 @@
         </tbody>
     </table>
 
+    <!-- model  -->
+    <div class="modal fade" id="reviewExamModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Review Exam </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" id="reviewForm">
+                    <div class="modal-body review-exam">
+                        Loading ... 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Approved</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+        
+
+    <script>
+        $(document).ready(function(){
+            $('.reviewExam').click(function(){
+                var id = $(this).attr('data-id');
+
+                $.ajax({
+                    url:"{{ route('reviewQna')}}",
+                    type:"GET",
+                    data:{attempt_id: id},
+                    success:function(data){
+                        var html = '';
+                        if (data.success == true) {
+                            var data = data.data;
+                            if(data.length  > 0 ){
+                                console.log(data);
+
+                                for(let i = 0; i < data.length; i ++){
+
+                                    let isCorrect = '<span style="color:red;" class="fa fa-close"> </span>' ;
+                                    if(data[i]['answers']['is_correct'] == 1){
+                                        isCorrect = '<span style="color:green;" class="fa fa-check"> </span>' ;
+                                    }else{
+
+                                    }
+
+                                    let answer= data[i]['answers']['answer'];
+                                    
+                                    html += `
+                                            <div class= "row">
+                                                <div class= "col-sm-12">
+                                                    <h6>Q(` +(i+1) + `). `+ data[i]['question'] ['question']+ `</h6>
+                                                    <p>Ans:-`+answer + ` `+isCorrect+`</p>
+                                                </div>
+                                            </div>
+                                    `;
+                                }
+                            }else{
+                                html += `<h6> Student not attempt any ques </h6>
+                                      <p> If u approve this exam will fail</p>  
+                                `;
+                            }
+                            
+                        } else {
+                            html += `<p>having some serve issue ! </p>`;
+                        }
+                        $('.review-exam').html(html);
+                    }
+
+                });
+            });
+        });
+    </script>
 @endsection

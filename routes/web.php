@@ -76,6 +76,7 @@ use App\Http\Controllers\ExamController;
 
     //Exam review
     Route::get('/admin/review-exams', [AdminController::class, 'reviewExams'])->name('reviewExams');
+    Route::get('/get-reviewed-qna', [AdminController::class, 'reviewQna'])->name('reviewQna');
     
 
 
