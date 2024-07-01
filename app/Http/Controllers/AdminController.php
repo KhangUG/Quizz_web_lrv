@@ -556,6 +556,70 @@ class AdminController extends Controller
 
 
 
+     public function approvedQna(Request $request){
+        try{
+            $attemptId = $request->attempt_id;
+
+            // Lấy dữ liệu ExamAttempt và mối quan hệ với Exam
+            $examData = ExamAttempt::where('id', $attemptId)
+                ->with(['user','exam'])
+                ->get();
+
+            // Lấy số điểm từ dữ liệu Exam
+            $marks = $examData[0]['exam']['marks'];
+
+            // Lấy dữ liệu ExamAnswer và mối quan hệ với Answers
+            $attemptData = ExamAnswer::where('attempt_id', $attemptId)
+                ->with('answers')
+                ->get();
+
+            $totalMarks = 0;
+
+            // Kiểm tra và tính tổng điểm
+            if (count($attemptData) > 0) {
+                foreach ($attemptData as $attempt) {
+                    if ($attempt->answers->is_correct == 1) {
+                        $totalMarks += $marks;
+                    }
+                }
+            }
+
+            // Cập nhật ExamAttempt với tổng điểm và trạng thái
+            ExamAttempt::where('id', $attemptId)->update([
+                'status' => 1,
+                'marks' => $totalMarks
+            ]);
+            // Tạo URL đến trang kết quả
+            $url = URL::to('/');
+
+            // Tạo mảng dữ liệu $data để truyền vào email
+            $data['url'] = $url . '/results';
+            $data['name'] = $examData[0]['user']['name'];
+            $data['email'] = $examData[0]['user']['email'];
+            $data['exam_name'] = $examData[0]['exam']['exam_name'];
+            $data['title'] = $examData[0]['exam']['exam_name'] . ' Result';
+
+            // Gửi email sử dụng hàm Mail::send
+            Mail::send('result-mail', ['data' => $data], function($message) use ($data) {
+                // Đặt địa chỉ email người nhận và tiêu đề email
+                $message->to($data['email'])->subject($data['title']);
+});
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'Approved Successfully!'
+                
+            ]);
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage()
+            ]);
+        }
+    }
+
+
     
 
 }

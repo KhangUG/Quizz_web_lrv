@@ -61,12 +61,14 @@
                     </button>
                 </div>
                 <form action="" id="reviewForm">
+                    @csrf
+                    <input type="hidden" name="attempt_id" id="attempt_id">
                     <div class="modal-body review-exam">
                         Loading ... 
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer ">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Approved</button>
+                        <button type="submit" class="btn btn-primary approved-btn">Approved</button>
                     </div>
 
                 </form>
@@ -80,6 +82,8 @@
         $(document).ready(function(){
             $('.reviewExam').click(function(){
                 var id = $(this).attr('data-id');
+                $('#attempt_id').val(id);
+
 
                 $.ajax({
                     url:"{{ route('reviewQna')}}",
@@ -90,7 +94,7 @@
                         if (data.success == true) {
                             var data = data.data;
                             if(data.length  > 0 ){
-                                console.log(data);
+                                
 
                                 for(let i = 0; i < data.length; i ++){
 
@@ -125,6 +129,28 @@
                     }
 
                 });
+            });
+
+            //approved exam 
+            $('#reviewForm').submit(function(event){
+                event.preventDefault();
+                $('.approved-btn').html('Please wait<i class="fa fa-spinner fa-spin"></i>')
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: "{{ route('approvedQna') }}",
+                    type: "POST",
+                    data: formData,
+                    success: function(data) {
+                        if (data.success == true) {
+                            location.reload();
+                        } else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+
             });
         });
     </script>
