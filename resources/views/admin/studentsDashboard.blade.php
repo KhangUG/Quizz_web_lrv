@@ -9,6 +9,8 @@
     Add Student
 </button>
 
+<a href="{{ route('exportStudents') }}" class="btn btn-warning"> Export Students</a>
+
 <table class="table">
     <thead>
         <th>#</th>

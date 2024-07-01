@@ -13,6 +13,7 @@ use App\Models\QnaExam;
 use App\Models\ExamAnswer;
 
 use App\Imports\QnaImport;
+use App\Exports\ExportStudent;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
 use Mail;
@@ -179,8 +180,14 @@ class AdminController extends Controller
     public function addQna(Request $request)
     {
         try {
+            $explaination = null;
+            if(isset($request->explaination)){
+                 $explaination= $request->explaination;
+            }
+
             $questionId = Question::insertGetId([
-                'question' => $request->question
+                'question' => $request->question,
+                'explaination'=>$explaination
 
             ]);
 
@@ -229,8 +236,14 @@ class AdminController extends Controller
     public function updateQna(Request $request)
     {
         try{
+            $explaination = null;
+            if(isset($request->explaination)){
+                 $explaination= $request->explaination;
+            }
+
             Question::where('id', $request->question_id)->update([
-                'question' => $request->question
+                'question' => $request->question,
+                'explaination'=> $explaination
             ]);
             
             //cap nhat cau hoi ban dau 
@@ -409,8 +422,18 @@ class AdminController extends Controller
             ]);
         }
             
-        
     }
+
+
+    //Export
+    public function ExportStudents(Request $request)
+    {
+        return Excel::download(new ExportStudent, 'students.xlsx');
+
+            
+    }
+
+
 
     //get questions
     public function getQuestions(Request $request)

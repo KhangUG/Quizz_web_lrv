@@ -63,6 +63,8 @@ use App\Http\Controllers\ExamController;
     Route::post('/edit-student', [AdminController::class,'editStudent'])->name('editStudent');
     Route::post('/delete-student', [AdminController::class,'deleteStudent'])->name('deleteStudent');
     Route::post('/delete-student', [AdminController::class,'deleteStudent'])->name('deleteStudent');
+    
+    Route::get('/export-students', [AdminController::class,'exportStudents'])->name('exportStudents');
 
     //route them cau hoi vao trong exam
     Route::get('/get-questions', [AdminController::class, 'getQuestions'])->name('getQuestions');
